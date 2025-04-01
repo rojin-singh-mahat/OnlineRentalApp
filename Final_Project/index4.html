@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luxury Villas | Premium Properties in Nepal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+         :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #e74c3c;
+            --accent-color: #3498db;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f9f9f9;
+            padding: 40px 0;
+        }
+        
+        .main {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 30px;
+            justify-content: center;
+        }
+        
+        .property-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .property-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .property-image-container {
+            position: relative;
+            height: 250px;
+            overflow: hidden;
+        }
+        
+        .property-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+        
+        .property-card:hover .property-image {
+            transform: scale(1.03);
+        }
+        
+        .property-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            z-index: 2;
+        }
+        
+        .heart-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 2;
+            border: none;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+        }
+        
+        .heart-btn:hover {
+            background: #f8f8f8;
+        }
+        
+        .heart-btn i {
+            color: var(--dark-color);
+            font-size: 18px;
+            transition: var(--transition);
+        }
+        
+        .heart-btn.active i {
+            color: var(--secondary-color);
+        }
+        
+        .property-info {
+            padding: 20px;
+        }
+        
+        .property-title {
+            font-size: 22px;
+            color: var(--dark-color);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .property-description {
+            color: #7f8c8d;
+            margin-bottom: 15px;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        
+        .property-features {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .feature-icon {
+            color: var(--accent-color);
+            font-size: 16px;
+        }
+        
+        .feature-text {
+            color: var(--dark-color);
+            font-size: 14px;
+        }
+        
+        .price-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+        
+        .price-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .original-price {
+            color: #95a5a6;
+            text-decoration: line-through;
+            font-size: 16px;
+        }
+        
+        .current-price {
+            color: var(--secondary-color);
+            font-size: 20px;
+            font-weight: 700;
+        }
+        
+        .price-per-sqm {
+            color: #7f8c8d;
+            font-size: 12px;
+        }
+        
+        .contact-btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        
+        .contact-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        /* Map styles */
+        
+        .property-map {
+            height: 180px;
+            width: 100%;
+            border-radius: 8px;
+            margin-top: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .property-map .leaflet-container {
+            height: 100%;
+            width: 100%;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            .property-features {
+                grid-template-columns: 1fr;
+            }
+            .price-section {
+                flex-direction: column;
+                gap: 12px;
+                align-items: flex-start;
+            }
+            .contact-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main">
+        <div class="container">
+            <!-- Property Card 1 - Kathmandu -->
+            <div class="property-card">
+                <div class="property-image-container">
+                    <span class="property-badge">Featured</span>
+                    <button class="heart-btn" onclick="toggleFavorite(this)">
+                        <i class="far fa-heart"></i>
+                    </button>
+                    <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Modern luxury villa in Kathmandu" class="property-image">
+                </div>
+                <div class="property-info">
+                    <h2 class="property-title">Lazimpat Villa</h2>
+                    <p class="property-description">Modern villa with elegant design in prime Kathmandu location near Thamel.</p>
+
+                    <div class="property-map" id="map1"></div>
+
+                    <div class="property-features">
+                        <div class="feature-item">
+                            <i class="fas fa-ruler-combined feature-icon"></i>
+                            <span class="feature-text">200 sq.m</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-couch feature-icon"></i>
+                            <span class="feature-text">1 living room</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-bed feature-icon"></i>
+                            <span class="feature-text">5 bedrooms</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-bath feature-icon"></i>
+                            <span class="feature-text">2 bathrooms</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-utensils feature-icon"></i>
+                            <span class="feature-text">1 kitchen</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-car feature-icon"></i>
+                            <span class="feature-text">2 parking</span>
+                        </div>
+                    </div>
+
+                    <div class="price-section">
+                        <div class="price-container">
+                            <span class="original-price">Rs 4,00,00,000</span>
+                            <span class="current-price">Rs 3,80,00,000</span>
+                            <span class="price-per-sqm">(Rs 1,90,000/sq.m)</span>
+                        </div>
+                        <button class="contact-btn" onclick="image1()">
+                            <i class="fas fa-phone-alt"></i> Contact
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Property Card 2 - Pokhara -->
+            <div class="property-card">
+                <div class="property-image-container">
+                    <span class="property-badge">New</span>
+                    <button class="heart-btn" onclick="toggleFavorite(this)">
+                        <i class="far fa-heart"></i>
+                    </button>
+                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Lakeside home in Pokhara" class="property-image">
+                </div>
+                <div class="property-info">
+                    <h2 class="property-title">Fewa Lake Retreat</h2>
+                    <p class="property-description">Contemporary villa with panoramic views of Fewa Lake and Annapurna range.</p>
+
+                    <div class="property-map" id="map2"></div>
+
+                    <div class="property-features">
+                        <div class="feature-item">
+                            <i class="fas fa-ruler-combined feature-icon"></i>
+                            <span class="feature-text">220 sq.m</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-couch feature-icon"></i>
+                            <span class="feature-text">2 living rooms</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-bed feature-icon"></i>
+                            <span class="feature-text">4 bedrooms</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-bath feature-icon"></i>
+                            <span class="feature-text">3 bathrooms</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-utensils feature-icon"></i>
+                            <span class="feature-text">1 kitchen</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-swimming-pool feature-icon"></i>
+                            <span class="feature-text">Pool</span>
+                        </div>
+                    </div>
+
+                    <div class="price-section">
+                        <div class="price-container">
+                            <span class="original-price">Rs 3,50,00,000</span>
+                            <span class="current-price">Rs 3,20,00,000</span>
+                            <span class="price-per-sqm">(Rs 1,45,454/sq.m)</span>
+                        </div>
+                        <button class="contact-btn">
+                            <i class="fas fa-phone-alt"></i> Contact
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Property Card 3 - Chitwan -->
+            <div class="property-card">
+                <div class="property-image-container">
+                    <span class="property-badge">Luxury</span>
+                    <button class="heart-btn" onclick="toggleFavorite(this)">
+                        <i class="far fa-heart"></i>
+                    </button>
+                    <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Jungle resort in Chitwan" class="property-image">
+                </div>
+                <div class="property-info">
+                    <h2 class="property-title">Chitwan Jungle Resort</h2>
+                    <p class="property-description">Luxury resort near Chitwan National Park with wildlife viewing.</p>
+
+                    <div class="property-map" id="map3"></div>
+
+                    <div class="property-features">
+                        <div class="feature-item">
+                            <i class="fas fa-ruler-combined feature-icon"></i>
+                            <span class="feature-text">250 sq.m</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-couch feature-icon"></i>
+                            <span class="feature-text">2 living rooms</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-bed feature-icon"></i>
+                            <span class="feature-text">4 bedrooms</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-bath feature-icon"></i>
+                            <span class="feature-text">3 bathrooms</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-utensils feature-icon"></i>
+                            <span class="feature-text">1 kitchen</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-binoculars feature-icon"></i>
+                            <span class="feature-text">Wildlife viewing</span>
+                        </div>
+                    </div>
+
+                    <div class="price-section">
+                        <div class="price-container">
+                            <span class="original-price">Rs 2,80,00,000</span>
+                            <span class="current-price">Rs 2,50,00,000</span>
+                            <span class="price-per-sqm">(Rs 1,00,000/sq.m)</span>
+                        </div>
+                        <button class="contact-btn">
+                            <i class="fas fa-phone-alt"></i> Contact
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Property Card 4 - Bhaktapur -->
+            <div class="property-card">
+                <div class="property-image-container">
+                    <span class="property-badge">Heritage</span>
+                    <button class="heart-btn" onclick="toggleFavorite(this)">
+                        <i class="far fa-heart"></i>
+                    </button>
+                    <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Traditional Newari house" class="property-image">
+                </div>
+                <div class="property-info">
+                    <h2 class="property-title">Bhaktapur Heritage Home</h2>
+                    <p class="property-description">Restored Newari house in Bhaktapur Durbar Square area.</p>
+
+                    <div class="property-map" id="map4"></div>
+
+                    <div class="property-features">
+                        <div class="feature-item">
+                            <i class="fas fa-ruler-combined feature-icon"></i>
+                            <span class="feature-text">180 sq.m</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-couch feature-icon"></i>
+                            <span class="feature-text">1 living room</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-bed feature-icon"></i>
+                            <span class="feature-text">3 bedrooms</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-bath feature-icon"></i>
+                            <span class="feature-text">2 bathrooms</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-utensils feature-icon"></i>
+                            <span class="feature-text">1 kitchen</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-landmark feature-icon"></i>
+                            <span class="feature-text">UNESCO site</span>
+                        </div>
+                    </div>
+
+                    <div class="price-section">
+                        <div class="price-container">
+                            <span class="original-price">Rs 3,20,00,000</span>
+                            <span class="current-price">Rs 2,90,00,000</span>
+                            <span class="price-per-sqm">(Rs 1,61,111/sq.m)</span>
+                        </div>
+                        <button class="contact-btn">
+                            <i class="fas fa-phone-alt"></i> Contact
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Property Card 5 - Nagarkot -->
+            <div class="property-card">
+                <div class="property-image-container">
+                    <span class="property-badge">View</span>
+                    <button class="heart-btn" onclick="toggleFavorite(this)">
+                        <i class="far fa-heart"></i>
+                    </button>
+                    <img src="https://images.unsplash.com/photo-1600566752225-220db9ecc8b5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="View home in Nagarkot" class="property-image">
+                </div>
+                <div class="property-info">
+                    <h2 class="property-title">Nagarkot View Villa</h2>
+                    <p class="property-description">Himalayan view property with sunrise views over Everest range.</p>
+
+                    <div class="property-map" id="map5"></div>
+
+                    <div class="property-features">
+                        <div class="feature-item">
+                            <i class="fas fa-ruler-combined feature-icon"></i>
+                            <span class="feature-text">220 sq.m</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-couch feature-icon"></i>
+                            <span class="feature-text">1 living room</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-bed feature-icon"></i>
+                            <span class="feature-text">3 bedrooms</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-bath feature-icon"></i>
+                            <span class="feature-text">2 bathrooms</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-utensils feature-icon"></i>
+                            <span class="feature-text">1 kitchen</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-mountain feature-icon"></i>
+                            <span class="feature-text">Himalayan views</span>
+                        </div>
+                    </div>
+
+                    <div class="price-section">
+                        <div class="price-container">
+                            <span class="original-price">Rs 3,50,00,000</span>
+                            <span class="current-price">Rs 3,20,00,000</span>
+                            <span class="price-per-sqm">(Rs 1,45,454/sq.m)</span>
+                        </div>
+                        <button class="contact-btn">
+                            <i class="fas fa-phone-alt"></i> Contact
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Property Card 6 - Dhulikhel -->
+            <div class="property-card">
+                <div class="property-image-container">
+                    <span class="property-badge">Retreat</span>
+                    <button class="heart-btn" onclick="toggleFavorite(this)">
+                        <i class="far fa-heart"></i>
+                    </button>
+                    <img src="https://images.unsplash.com/photo-1600585152220-90363fe7e115?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Retreat in Dhulikhel" class="property-image">
+                </div>
+                <div class="property-info">
+                    <h2 class="property-title">Dhulikhel Retreat</h2>
+                    <p class="property-description">Peaceful meditation retreat with Himalayan views near Kathmandu.</p>
+
+                    <div class="property-map" id="map6"></div>
+
+                    <div class="property-features">
+                        <div class="feature-item">
+                            <i class="fas fa-ruler-combined feature-icon"></i>
+                            <span class="feature-text">180 sq.m</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-couch feature-icon"></i>
+                            <span class="feature-text">1 living room</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-bed feature-icon"></i>
+                            <span class="feature-text">3 bedrooms</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-bath feature-icon"></i>
+                            <span class="feature-text">2 bathrooms</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-utensils feature-icon"></i>
+                            <span class="feature-text">1 kitchen</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-spa feature-icon"></i>
+                            <span class="feature-text">Yoga space</span>
+                        </div>
+                    </div>
+
+                    <div class="price-section">
+                        <div class="price-container">
+                            <span class="original-price">Rs 2,80,00,000</span>
+                            <span class="current-price">Rs 2,50,00,000</span>
+                            <span class="price-per-sqm">(Rs 1,38,888/sq.m)</span>
+                        </div>
+                        <button class="contact-btn">
+                            <i class="fas fa-phone-alt"></i> Contact
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Property Card 7 - Lumbini -->
+            <div class="property-card">
+                <div class="property-image-container">
+                    <span class="property-badge">Spiritual</span>
+                    <button class="heart-btn" onclick="toggleFavorite(this)">
+                        <i class="far fa-heart"></i>
+                    </button>
+                    <img src="https://images.unsplash.com/photo-1600121848594-d8644e57abab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Property near Lumbini" class="property-image">
+                </div>
+                <div class="property-info">
+                    <h2 class="property-title">Lumbini Peace Residence</h2>
+                    <p class="property-description">Serene property near Buddha's birthplace with meditation garden.</p>
+
+                    <div class="property-map" id="map7"></div>
+
+                    <div class="property-features">
+                        <div class="feature-item">
+                            <i class="fas fa-ruler-combined feature-icon"></i>
+                            <span class="feature-text">200 sq.m</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-couch feature-icon"></i>
+                            <span class="feature-text">1 living room</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-bed feature-icon"></i>
+                            <span class="feature-text">3 bedrooms</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-bath feature-icon"></i>
+                            <span class="feature-text">2 bathrooms</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-utensils feature-icon"></i>
+                            <span class="feature-text">1 kitchen</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-om feature-icon"></i>
+                            <span class="feature-text">Meditation space</span>
+                        </div>
+                    </div>
+
+                    <div class="price-section">
+                        <div class="price-container">
+                            <span class="original-price">Rs 1,90,00,000</span>
+                            <span class="current-price">Rs 1,70,00,000</span>
+                            <span class="price-per-sqm">(Rs 85,000/sq.m)</span>
+                        </div>
+                        <button class="contact-btn">
+                            <i class="fas fa-phone-alt"></i> Contact
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Property Card 8 - Bandipur -->
+            <div class="property-card">
+                <div class="property-image-container">
+                    <span class="property-badge">Heritage</span>
+                    <button class="heart-btn" onclick="toggleFavorite(this)">
+                        <i class="far fa-heart"></i>
+                    </button>
+                    <img src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Bandipur heritage home" class="property-image">
+                </div>
+                <div class="property-info">
+                    <h2 class="property-title">Bandipur Newari Home</h2>
+                    <p class="property-description">Beautifully restored Newari house in historic Bandipur bazaar.</p>
+
+                    <div class="property-map" id="map8"></div>
+
+                    <div class="property-features">
+                        <div class="feature-item">
+                            <i class="fas fa-ruler-combined feature-icon"></i>
+                            <span class="feature-text">180 sq.m</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-couch feature-icon"></i>
+                            <span class="feature-text">1 living room</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-bed feature-icon"></i>
+                            <span class="feature-text">3 bedrooms</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-bath feature-icon"></i>
+                            <span class="feature-text">2 bathrooms</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-utensils feature-icon"></i>
+                            <span class="feature-text">1 kitchen</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-history feature-icon"></i>
+                            <span class="feature-text">Historic area</span>
+                        </div>
+                    </div>
+
+                    <div class="price-section">
+                        <div class="price-container">
+                            <span class="original-price">Rs 2,20,00,000</span>
+                            <span class="current-price">Rs 2,00,00,000</span>
+                            <span class="price-per-sqm">(Rs 1,11,111/sq.m)</span>
+                        </div>
+                        <button class="contact-btn">
+                            <i class="fas fa-phone-alt"></i> Contact
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Property Card 9 - Mustang -->
+            <div class="property-card">
+                <div class="property-image-container">
+                    <span class="property-badge">Unique</span>
+                    <button class="heart-btn" onclick="toggleFavorite(this)">
+                        <i class="far fa-heart"></i>
+                    </button>
+                    <img src="https://images.unsplash.com/photo-1600607688969-a5bfcd646154?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Mustang desert home" class="property-image">
+                </div>
+                <div class="property-info">
+                    <h2 class="property-title">Mustang Desert Home</h2>
+                    <p class="property-description">Unique property in Upper Mustang's desert landscape near Tibetan border.</p>
+
+                    <div class="property-map" id="map9"></div>
+
+                    <div class="property-features">
+                        <div class="feature-item">
+                            <i class="fas fa-ruler-combined feature-icon"></i>
+                            <span class="feature-text">150 sq.m</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-couch feature-icon"></i>
+                            <span class="feature-text">1 living room</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-bed feature-icon"></i>
+                            <span class="feature-text">2 bedrooms</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-bath feature-icon"></i>
+                            <span class="feature-text">1 bathroom</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-utensils feature-icon"></i>
+                            <span class="feature-text">1 kitchen</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-mountain feature-icon"></i>
+                            <span class="feature-text">Himalayan desert</span>
+                        </div>
+                    </div>
+
+                    <div class="price-section">
+                        <div class="price-container">
+                            <span class="original-price">Rs 1,50,00,000</span>
+                            <span class="current-price">Rs 1,30,00,000</span>
+                            <span class="price-per-sqm">(Rs 86,666/sq.m)</span>
+                        </div>
+                        <button class="contact-btn">
+                            <i class="fas fa-phone-alt"></i> Contact
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Property Card 10 - Patan -->
+            <div class="property-card">
+                <div class="property-image-container">
+                    <span class="property-badge">Cultural</span>
+                    <button class="heart-btn" onclick="toggleFavorite(this)">
+                        <i class="far fa-heart"></i>
+                    </button>
+                    <img src="https://images.unsplash.com/photo-1605146769289-440113cc3d00?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Patan courtyard home" class="property-image">
+                </div>
+                <div class="property-info">
+                    <h2 class="property-title">Patan Courtyard Home</h2>
+                    <p class="property-description">Traditional Newari home with courtyard near Patan Durbar Square.</p>
+
+                    <div class="property-map" id="map10"></div>
+
+                    <div class="property-features">
+                        <div class="feature-item">
+                            <i class="fas fa-ruler-combined feature-icon"></i>
+                            <span class="feature-text">200 sq.m</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-couch feature-icon"></i>
+                            <span class="feature-text">1 living room</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-bed feature-icon"></i>
+                            <span class="feature-text">3 bedrooms</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-bath feature-icon"></i>
+                            <span class="feature-text">2 bathrooms</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-utensils feature-icon"></i>
+                            <span class="feature-text">1 kitchen</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-archway feature-icon"></i>
+                            <span class="feature-text">Courtyard</span>
+                        </div>
+                    </div>
+
+                    <div class="price-section">
+                        <div class="price-container">
+                            <span class="original-price">Rs 2,80,00,000</span>
+                            <span class="current-price">Rs 2,60,00,000</span>
+                            <span class="price-per-sqm">(Rs 1,30,000/sq.m)</span>
+                        </div>
+                        <button class="contact-btn">
+                            <i class="fas fa-phone-alt"></i> Contact
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Property Card 11 - Boudha -->
+            <div class="property-card">
+                <div class="property-image-container">
+                    <span class="property-badge">Spiritual</span>
+                    <button class="heart-btn" onclick="toggleFavorite(this)">
+                        <i class="far fa-heart"></i>
+                    </button>
+                    <img src="https://images.unsplash.com/photo-1600121848594-d8644e57abab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Boudha property" class="property-image">
+                </div>
+                <div class="property-info">
+                    <h2 class="property-title">Boudha Stupa Residence</h2>
+                    <p class="property-description">Luxury home with views of the iconic Boudhanath Stupa in Kathmandu.</p>
+
+                    <div class="property-map" id="map11"></div>
+
+                    <div class="property-features">
+                        <div class="feature-item">
+                            <i class="fas fa-ruler-combined feature-icon"></i>
+                            <span class="feature-text">180 sq.m</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-couch feature-icon"></i>
+                            <span class="feature-text">1 living room</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-bed feature-icon"></i>
+                            <span class="feature-text">3 bedrooms</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-bath feature-icon"></i>
+                            <span class="feature-text">2 bathrooms</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-utensils feature-icon"></i>
+                            <span class="feature-text">1 kitchen</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-pray feature-icon"></i>
+                            <span class="feature-text">Stupa views</span>
+                        </div>
+                    </div>
+
+                    <div class="price-section">
+                        <div class="price-container">
+                            <span class="original-price">Rs 3,50,00,000</span>
+                            <span class="current-price">Rs 3,30,00,000</span>
+                            <span class="price-per-sqm">(Rs 1,83,333/sq.m)</span>
+                        </div>
+                        <button class="contact-btn">
+                            <i class="fas fa-phone-alt"></i> Contact
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Property Card 12 - Pharping -->
+            <div class="property-card">
+                <div class="property-image-container">
+                    <span class="property-badge">Retreat</span>
+                    <button class="heart-btn" onclick="toggleFavorite(this)">
+                        <i class="far fa-heart"></i>
+                    </button>
+                    <img src="https://images.unsplash.com/photo-1600566752225-220db9ecc8b5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Pharping retreat" class="property-image">
+                </div>
+                <div class="property-info">
+                    <h2 class="property-title">Pharping Meditation Villa</h2>
+                    <p class="property-description">Peaceful retreat property in the sacred hills of Pharping.</p>
+
+                    <div class="property-map" id="map12"></div>
+
+                    <div class="property-features">
+                        <div class="feature-item">
+                            <i class="fas fa-ruler-combined feature-icon"></i>
+                            <span class="feature-text">150 sq.m</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-couch feature-icon"></i>
+                            <span class="feature-text">1 living room</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-bed feature-icon"></i>
+                            <span class="feature-text">2 bedrooms</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-bath feature-icon"></i>
+                            <span class="feature-text">1 bathroom</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-utensils feature-icon"></i>
+                            <span class="feature-text">1 kitchen</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-om feature-icon"></i>
+                            <span class="feature-text">Meditation space</span>
+                        </div>
+                    </div>
+
+                    <div class="price-section">
+                        <div class="price-container">
+                            <span class="original-price">Rs 1,80,00,000</span>
+                            <span class="current-price">Rs 1,60,00,000</span>
+                            <span class="price-per-sqm">(Rs 1,06,666/sq.m)</span>
+                        </div>
+                        <button class="contact-btn">
+                            <i class="fas fa-phone-alt"></i> Contact
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Property Card 13 - Godavari -->
+            <div class="property-card">
+                <div class="property-image-container">
+                    <span class="property-badge">Garden</span>
+                    <button class="heart-btn" onclick="toggleFavorite(this)">
+                        <i class="far fa-heart"></i>
+                    </button>
+                    <img src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Godavari garden home" class="property-image">
+                </div>
+                <div class="property-info">
+                    <h2 class="property-title">Godavari Garden Estate</h2>
+                    <p class="property-description">Luxurious property with extensive gardens in the foothills of Godavari.</p>
+
+                    <div class="property-map" id="map13"></div>
+
+                    <div class="property-features">
+                        <div class="feature-item">
+                            <i class="fas fa-ruler-combined feature-icon"></i>
+                            <span class="feature-text">300 sq.m</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-couch feature-icon"></i>
+                            <span class="feature-text">2 living rooms</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-bed feature-icon"></i>
+                            <span class="feature-text">4 bedrooms</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-bath feature-icon"></i>
+                            <span class="feature-text">3 bathrooms</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-utensils feature-icon"></i>
+                            <span class="feature-text">1 kitchen</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-tree feature-icon"></i>
+                            <span class="feature-text">2 Ropani land</span>
+                        </div>
+                    </div>
+
+                    <div class="price-section">
+                        <div class="price-container">
+                            <span class="original-price">Rs 4,50,00,000</span>
+                            <span class="current-price">Rs 4,20,00,000</span>
+                            <span class="price-per-sqm">(Rs 1,40,000/sq.m)</span>
+                        </div>
+                        <button class="contact-btn">
+                            <i class="fas fa-phone-alt"></i> Contact
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Property Card 14 - Sankhu -->
+            <div class="property-card">
+                <div class="property-image-container">
+                    <span class="property-badge">Heritage</span>
+                    <button class="heart-btn" onclick="toggleFavorite(this)">
+                        <i class="far fa-heart"></i>
+                    </button>
+                    <img src="https://images.unsplash.com/photo-1600607688969-a5bfcd646154?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Sankhu heritage home" class="property-image">
+                </div>
+                <div class="property-info">
+                    <h2 class="property-title">Sankhu Heritage Villa</h2>
+                    <p class="property-description">Traditional Newari home in the ancient town of Sankhu near Kathmandu.</p>
+
+                    <div class="property-map" id="map14"></div>
+
+                    <div class="property-features">
+                        <div class="feature-item">
+                            <i class="fas fa-ruler-combined feature-icon"></i>
+                            <span class="feature-text">220 sq.m</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-couch feature-icon"></i>
+                            <span class="feature-text">1 living room</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-bed feature-icon"></i>
+                            <span class="feature-text">3 bedrooms</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-bath feature-icon"></i>
+                            <span class="feature-text">2 bathrooms</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-utensils feature-icon"></i>
+                            <span class="feature-text">1 kitchen</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-landmark feature-icon"></i>
+                            <span class="feature-text">Ancient town</span>
+                        </div>
+                    </div>
+
+                    <div class="price-section">
+                        <div class="price-container">
+                            <span class="original-price">Rs 2,50,00,000</span>
+                            <span class="current-price">Rs 2,30,00,000</span>
+                            <span class="price-per-sqm">(Rs 1,04,545/sq.m)</span>
+                        </div>
+                        <button class="contact-btn">
+                            <i class="fas fa-phone-alt"></i> Contact
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Property Card 15 - Kirtipur -->
+            <div class="property-card">
+                <div class="property-image-container">
+                    <span class="property-badge">Historic</span>
+                    <button class="heart-btn" onclick="toggleFavorite(this)">
+                        <i class="far fa-heart"></i>
+                    </button>
+                    <img src="https://images.unsplash.com/photo-1600585152220-90363fe7e115?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Kirtipur heritage home" class="property-image">
+                </div>
+                <div class="property-info">
+                    <h2 class="property-title">Kirtipur Heritage Home</h2>
+                    <p class="property-description">Beautifully restored historic home in the ancient city of Kirtipur.</p>
+
+                    <div class="property-map" id="map15"></div>
+
+                    <div class="property-features">
+                        <div class="feature-item">
+                            <i class="fas fa-ruler-combined feature-icon"></i>
+                            <span class="feature-text">200 sq.m</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-couch feature-icon"></i>
+                            <span class="feature-text">1 living room</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-bed feature-icon"></i>
+                            <span class="feature-text">3 bedrooms</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-bath feature-icon"></i>
+                            <span class="feature-text">2 bathrooms</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-utensils feature-icon"></i>
+                            <span class="feature-text">1 kitchen</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-history feature-icon"></i>
+                            <span class="feature-text">Historic city</span>
+                        </div>
+                    </div>
+
+                    <div class="price-section">
+                        <div class="price-container">
+                            <span class="original-price">Rs 2,80,00,000</span>
+                            <span class="current-price">Rs 2,60,00,000</span>
+                            <span class="price-per-sqm">(Rs 1,30,000/sq.m)</span>
+                        </div>
+                        <button class="contact-btn">
+                            <i class="fas fa-phone-alt"></i> Contact
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        // Initialize maps after DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Property 1 Map (Lazimpat, Kathmandu)
+            var map1 = L.map('map1').setView([27.7172, 85.3240], 15);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map1);
+            L.marker([27.7172, 85.3240]).addTo(map1)
+                .bindPopup("<b>Lazimpat Villa</b><br>Modern luxury villa in Kathmandu")
+                .openPopup();
+
+            // Property 2 Map (Pokhara)
+            var map2 = L.map('map2').setView([28.2096, 83.9856], 14);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map2);
+            L.marker([28.2096, 83.9856]).addTo(map2)
+                .bindPopup("<b>Fewa Lake Retreat</b><br>Lakeside property in Pokhara")
+                .openPopup();
+
+            // Property 3 Map (Chitwan)
+            var map3 = L.map('map3').setView([27.5292, 84.3544], 14);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map3);
+            L.marker([27.5292, 84.3544]).addTo(map3)
+                .bindPopup("<b>Chitwan Jungle Resort</b><br>Near Chitwan National Park")
+                .openPopup();
+
+            // Property 4 Map (Bhaktapur)
+            var map4 = L.map('map4').setView([27.6710, 85.4296], 15);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map4);
+            L.marker([27.6710, 85.4296]).addTo(map4)
+                .bindPopup("<b>Bhaktapur Heritage Home</b><br>Traditional Newari house")
+                .openPopup();
+
+            // Property 5 Map (Nagarkot)
+            var map5 = L.map('map5').setView([27.7156, 85.5206], 14);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map5);
+            L.marker([27.7156, 85.5206]).addTo(map5)
+                .bindPopup("<b>Nagarkot View Villa</b><br>Himalayan views")
+                .openPopup();
+
+            // Property 6 Map (Dhulikhel)
+            var map6 = L.map('map6').setView([27.6186, 85.5523], 14);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map6);
+            L.marker([27.6186, 85.5523]).addTo(map6)
+                .bindPopup("<b>Dhulikhel Retreat</b><br>Peaceful meditation retreat")
+                .openPopup();
+
+            // Property 7 Map (Lumbini)
+            var map7 = L.map('map7').setView([27.6792, 83.5070], 14);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map7);
+            L.marker([27.6792, 83.5070]).addTo(map7)
+                .bindPopup("<b>Lumbini Peace Residence</b><br>Near Buddha's birthplace")
+                .openPopup();
+
+            // Property 8 Map (Bandipur)
+            var map8 = L.map('map8').setView([27.9389, 84.4256], 14);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map8);
+            L.marker([27.9389, 84.4256]).addTo(map8)
+                .bindPopup("<b>Bandipur Newari Home</b><br>Historic Bandipur bazaar")
+                .openPopup();
+
+            // Property 9 Map (Mustang)
+            var map9 = L.map('map9').setView([28.8056, 83.7353], 14);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map9);
+            L.marker([28.8056, 83.7353]).addTo(map9)
+                .bindPopup("<b>Mustang Desert Home</b><br>Upper Mustang property")
+                .openPopup();
+
+            // Property 10 Map (Patan)
+            var map10 = L.map('map10').setView([27.6734, 85.3240], 15);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map10);
+            L.marker([27.6734, 85.3240]).addTo(map10)
+                .bindPopup("<b>Patan Courtyard Home</b><br>Traditional Newari architecture")
+                .openPopup();
+
+            // Property 11 Map (Boudha)
+            var map11 = L.map('map11').setView([27.7218, 85.3615], 15);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map11);
+            L.marker([27.7218, 85.3615]).addTo(map11)
+                .bindPopup("<b>Boudha Stupa Residence</b><br>Views of Boudhanath")
+                .openPopup();
+
+            // Property 12 Map (Pharping)
+            var map12 = L.map('map12').setView([27.5936, 85.2775], 14);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map12);
+            L.marker([27.5936, 85.2775]).addTo(map12)
+                .bindPopup("<b>Pharping Meditation Villa</b><br>Sacred hills retreat")
+                .openPopup();
+
+            // Property 13 Map (Godavari)
+            var map13 = L.map('map13').setView([27.5917, 85.3803], 14);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map13);
+            L.marker([27.5917, 85.3803]).addTo(map13)
+                .bindPopup("<b>Godavari Garden Estate</b><br>Foothills property")
+                .openPopup();
+
+            // Property 14 Map (Sankhu)
+            var map14 = L.map('map14').setView([27.7129, 85.4285], 14);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map14);
+            L.marker([27.7129, 85.4285]).addTo(map14)
+                .bindPopup("<b>Sankhu Heritage Villa</b><br>Ancient town home")
+                .openPopup();
+
+            // Property 15 Map (Kirtipur)
+            var map15 = L.map('map15').setView([27.6769, 85.2775], 14);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map15);
+            L.marker([27.6769, 85.2775]).addTo(map15)
+                .bindPopup("<b>Kirtipur Heritage Home</b><br>Historic city property")
+                .openPopup();
+        });
+
+        function toggleFavorite(button) {
+            button.classList.toggle('active');
+            const icon = button.querySelector('i');
+
+            if (button.classList.contains('active')) {
+                icon.classList.remove('far');
+                icon.classList.add('fas');
+                // Here you could add to favorites functionality
+            } else {
+                icon.classList.remove('fas');
+                icon.classList.add('far');
+                // Here you could remove from favorites functionality
+            }
+        }
+
+        function image1() {
+            window.location.href = "index5.html";
+        }
+    </script>
+</body>
+
+</html>

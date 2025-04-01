@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #fceabb, #fdba01);
+            margin: 0;
+            padding: 0;
+        }
+        
+        .head {
+            display: flex;
+            gap: 111px;
+            align-items: center;
+            border: 1px solid rgb(255, 255, 255);
+            justify-content: center;
+            background-color: bisque;
+            border-radius: 21px;
+        }
+        
+        .head button {
+            height: 51px;
+            width: 111px;
+            border-radius: 11px;
+            background-color: rgb(190, 181, 52);
+            color: rgb(0, 0, 0);
+            border-color: aliceblue;
+            cursor: pointer;
+        }
+        
+        .head button:hover {
+            background-color: green;
+        }
+        
+        .head p {
+            font-size: 21px;
+            cursor: pointer;
+        }
+        
+        .head h1 {
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        }
+        
+        .image img {
+            width: 1261px;
+            height: 500px;
+            margin-top: 21px;
+            margin-left: 121px;
+            border-radius: 21px;
+        }
+        
+        .below_body {
+            display: flex;
+            gap: 171px;
+            margin-left: 251px;
+            margin-top: 21px;
+            background-color: antiquewhite;
+            text-align: center;
+            justify-content: center;
+            width: 980px;
+            border-radius: 21px;
+        }
+        
+        img:hover {
+            transform: scale(1.1);
+        }
+        
+        .house_image {
+            display: flex;
+            gap: 19px;
+            text-align: center;
+            margin-left: 39px;
+        }
+        
+        .house_image img {
+            border-radius: 21px;
+            width: 450px;
+        }
+        
+        .lower_body h1 {
+            margin-left: 67px;
+        }
+        
+        .lower_body {
+            margin-top: 82px;
+        }
+        
+        .tail {
+            display: flex;
+            gap: 943px;
+            margin-left: 31px;
+            background-color: antiquewhite;
+            margin-top: 31px;
+            border-radius: 31px;
+        }
+        
+        .upper_tail {
+            display: flex;
+            gap: 231PX;
+            background-color: antiquewhite;
+            width: 900px;
+            margin-left: 331px;
+            margin-top: 21px;
+            border-radius: 22px;
+        }
+        
+        .upper_tail_one {
+            margin-left: 42px;
+        }
+        
+        .upper_tail_two {
+            margin-top: 52px;
+        }
+        
+        .upper_tail_two button {
+            width: 112px;
+            height: 41px;
+            border-radius: 12px;
+            background-color: blueviolet;
+            border-color: white;
+            cursor: pointer;
+        }
+        
+        .upper_tail_two button:hover {
+            background-color: green;
+        }
+        
+        .one_tail {
+            margin-left: 41px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="head">
+                <h1>CozyKeys</h1>
+                <p>Houses</p>
+                <p>Properties</p>
+                <p>Avaibles</p>
+                <button>Rent</button>
+                <button onclick="login()">Login</button>
+            </div>
+        </header>
+        <div class="body">
+            <div class="image">
+                <img src="https://media.istockphoto.com/id/488120139/photo/modern-real-estate.jpg?s=612x612&w=0&k=20&c=88jk1VLSoYboMmLUx173sHs_XrZ9pH21as8lC7WINQs=" alt="">
+            </div>
+            <div class="below_body">
+                <div class="one">
+                    <h1>Location</h1>
+                    <p>Where is your dream</p>
+                </div>
+                <div class="two">
+                    <h1>View</h1>
+                    <p>Details</p>
+                </div>
+                <div class="three">
+                    <h1>Add to cart</h1>
+                    <p>Manage Profile</p>
+                </div>
+            </div>
+        </div>
+        <div class="lower_body">
+            <h1>Popular houses</h1>
+            <div class="house_image">
+                <div class="Fhouse"> <img src="https://media.istockphoto.com/id/187227839/photo/house-at-dusk.jpg?s=612x612&w=0&k=20&c=--0cq6IRUYsUVJ4vXftrfN82ou92wVjYARDzDQFuR7c=" alt="">
+                    <h3>Bangloure</h3>
+                </div>
+                <div class="Shouse"> <img src="https://media.istockphoto.com/id/135843207/photo/house-at-dusk.jpg?s=612x612&w=0&k=20&c=MOM0sXVkCQmZCb-Bw2wOkqR482W2j2GD6a1Mqt3e7Ek=" alt="">
+                    <h3>Apartment</h3>
+                </div>
+                <div class="Thouse"> <img src="https://media.istockphoto.com/id/955129088/photo/suburb-houses-at-dusk.jpg?s=612x612&w=0&k=20&c=nh2ixORZTTJCTFEpNfutyGOSPTWjjSo2d42AxCQgFHQ=" alt="">
+                    <h3>Guest</h3>
+                </div>
+            </div>
+        </div>
+        <div class="upper_tail">
+            <div class="upper_tail_one">
+                <h3>Exclusive deals!</h3>
+                <p>Want exclusive offers and discount for your next house rental? <br> Join our CozyKeys club now</p>
+            </div>
+            <div class="upper_tail_two">
+                <button>JOIN CLUB</button>
+            </div>
+        </div>
+        <div class="tail">
+            <div class="one_tail">
+                <h1>RentKTM</h1>
+                <p>You go-to house rental platform <br> with a clean interface
+                </p>
+                <p>CozyKeys @2025</p>
+            </div>
+            <div class="another-tail">
+                <h1>Support</h1>
+                <p>House renting</p>
+                <p>Help Center</p>
+                <p>Assistance</p>
+                <p>Get in touch</p>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    function login() {
+        window.location.href = "index2.html";
+    }
+</script>
+
+</html>
