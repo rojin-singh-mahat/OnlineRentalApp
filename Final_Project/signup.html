@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CozyKeys - Sign Up</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+         :root {
+            --primary: #4361ee;
+            --primary-light: #4895ef;
+            --primary-dark: #3f37c9;
+            --secondary: #f72585;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --white: #ffffff;
+            --success: #4cc9f0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            display: flex;
+            max-width: 1200px;
+            width: 100%;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-section {
+            flex: 1;
+            padding: 60px;
+            background-color: var(--white);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .logo h1 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        
+        .logo p {
+            color: var(--gray);
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .form-container {
+            max-width: 400px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid var(--light-gray);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(72, 149, 239, 0.2);
+        }
+        
+        .error-text {
+            color: var(--secondary);
+            font-size: 0.8rem;
+            margin-top: 5px;
+            display: block;
+        }
+        
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--white);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 25px 0;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid var(--light-gray);
+            margin: 0 10px;
+        }
+        
+        .social-login {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .social-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--white);
+            border: 1px solid var(--light-gray);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .social-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .social-btn i {
+            font-size: 1.2rem;
+        }
+        
+        .facebook {
+            color: #1877F2;
+        }
+        
+        .google {
+            color: #DB4437;
+        }
+        
+        .twitter {
+            color: #1DA1F2;
+        }
+        
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--gray);
+        }
+        
+        .login-link a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+        
+        .terms {
+            font-size: 0.8rem;
+            color: var(--gray);
+            text-align: center;
+            margin-top: 30px;
+            line-height: 1.5;
+        }
+        
+        .terms a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .terms a:hover {
+            text-decoration: underline;
+        }
+        
+        .image-section {
+            flex: 1;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .image-content {
+            text-align: center;
+            color: var(--white);
+            z-index: 2;
+            width: 100%;
+        }
+        
+        .image-content h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+        
+        .image-content p {
+            opacity: 0.9;
+            max-width: 400px;
+            margin: 0 auto 30px;
+        }
+        
+        .feature-image {
+            width: 100%;
+            max-width: 400px;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            margin: 0 auto;
+            display: block;
+        }
+        
+        .image-section::before {
+            content: '';
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            top: -50px;
+            right: -50px;
+        }
+        
+        .image-section::after {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            bottom: -100px;
+            left: -100px;
+        }
+        
+        @media (max-width: 992px) {
+            .container {
+                flex-direction: column;
+            }
+            .image-section {
+                display: none;
+            }
+            .form-section {
+                padding: 40px 30px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="form-section">
+            <div class="logo">
+                <h1>CozyKeys</h1>
+                <p>Find your perfect home with us</p>
+            </div>
+
+            <div class="form-container">
+                <form id="signupForm">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" class="form-control" placeholder="Enter your full name">
+                        <small class="error-text"></small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" class="form-control" placeholder="Enter your email">
+                        <small class="error-text"></small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" class="form-control" placeholder="Create a password">
+                        <small class="error-text"></small>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Create Account</button>
+                </form>
+
+                <div class="divider">or sign up with</div>
+
+                <div class="social-login">
+                    <div class="social-btn facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </div>
+                    <div class="social-btn google">
+                        <i class="fab fa-google"></i>
+                    </div>
+                    <div class="social-btn twitter">
+                        <i class="fab fa-twitter"></i>
+                    </div>
+                </div>
+
+                <div class="login-link">
+                    Already have an account? <a href="#" id="loginLink">Log in</a>
+                </div>
+
+                <div class="terms">
+                    By signing up, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="image-section">
+            <div class="image-content">
+                <h2>Welcome to CozyKeys</h2>
+                <p>Join thousands of happy customers who found their dream home through our platform.</p>
+                <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Modern apartment building" class="feature-image">
+            </div>
+        </div>
+    </div>
+
+    <!-- SweetAlert JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.getElementById("signupForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            const nameInput = document.getElementById("name");
+            const emailInput = document.getElementById("email");
+            const passwordInput = document.getElementById("password");
+
+            const name = nameInput.value.trim();
+            const email = emailInput.value.trim();
+            const password = passwordInput.value.trim();
+
+            const emailPattern = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
+
+            // Clear previous errors
+            document.querySelectorAll(".error-text").forEach(el => el.textContent = '');
+
+            let isValid = true;
+
+            if (name === "") {
+                nameInput.nextElementSibling.textContent = "Please enter your name";
+                isValid = false;
+            }
+
+            if (!emailPattern.test(email)) {
+                emailInput.nextElementSibling.textContent = "";
+
+            }
+
+            if (password === "") {
+                passwordInput.nextElementSibling.textContent = "Please enter a password";
+                isValid = false;
+            } else if (password.length < 6) {
+                passwordInput.nextElementSibling.textContent = "Password must be at least 6 characters";
+                isValid = false;
+            }
+
+            if (isValid) {
+                Swal.fire({
+                    title: 'Account Created!',
+                    html: `
+                        <div style="text-align: left; margin: 20px 0;">
+                            <p><strong>Name:</strong> ${name}</p>
+                            <p><strong>Email:</strong> ${email}</p>
+                        </div>
+                        <p>Welcome to CozyKeys! Your account has been successfully created.</p>
+                    `,
+                    icon: 'success',
+                    confirmButtonColor: '#4361ee',
+                    confirmButtonText: 'Continue to Villa'
+                }).then(() => {
+                    // Redirect to villa.html after account creation
+                    window.location.href = "villa.html";
+                });
+            }
+        });
+
+        document.getElementById("loginLink").addEventListener("click", function(e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Redirecting to Login',
+                text: 'You will be taken to the login page',
+                icon: 'info',
+                confirmButtonColor: '#4361ee',
+                showCancelButton: true,
+                confirmButtonText: 'Continue',
+                cancelButtonText: 'Stay Here'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "apartment.html";
+                }
+            });
+        });
+
+        document.querySelectorAll(".social-btn").forEach(btn => {
+            btn.addEventListener("click", function() {
+                const platform = this.querySelector("i").classList[1].split("-")[1];
+                Swal.fire({
+                    title: `${platform.charAt(0).toUpperCase() + platform.slice(1)} Login`,
+                    text: `You chose to login with ${platform}`,
+                    icon: 'info',
+                    confirmButtonColor: '#4361ee'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "apartment.html";
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
