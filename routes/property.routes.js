@@ -10,4 +10,4 @@ const router = express.Router();
 router.post("/postProperty/:id", upload.array("images", 10), createProperty);
 router.get("/getAllProperty", getAllProperties);
 
-module.exports = router;
+module.exports = router; //test
