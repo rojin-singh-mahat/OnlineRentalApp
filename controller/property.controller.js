@@ -28,9 +28,31 @@ const createProperty = async (req, res) => {
     const formData = req.body;
     const files = req.files;
 
+    console.log("Form data received:", formData);
+
+    // Convert price to number
+    formData.price = Number(formData.price);
+
+    // Normalize optional numeric fields
+    const numericFields = [
+      "bedrooms",
+      "bathrooms",
+      "balcony",
+      "dimension",
+      "totalArea",
+      "floorLoad",
+    ];
+
+    numericFields.forEach((field) => {
+      if (formData[field]) {
+        formData[field] = Number(formData[field]) || 0;
+      }
+    });
+
+    // Validate image count
     if (!files || files.length < 5) {
       return res.status(400).json({
-        message: "Atleast 5 images are required",
+        message: "At least 5 images are required",
       });
     }
 
@@ -72,6 +94,7 @@ const createProperty = async (req, res) => {
     });
   }
 };
+
 
 const getAllProperties = async (req, res) => {
   try {
