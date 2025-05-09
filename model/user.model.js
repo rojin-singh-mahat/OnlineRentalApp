@@ -1,3 +1,4 @@
+// user.model.js
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
@@ -39,6 +40,14 @@ const userSchema = new mongoose.Schema(
       enum: ["tenant", "landlord"],
       default: "tenant",
     },
+
+    // Favorite properties (store property IDs)
+    favorites: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Property",  // Reference to Property model for ID
+      },
+    ],
   },
   { timestamps: true }
 );

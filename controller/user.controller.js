@@ -152,11 +152,22 @@ const deleteUser = async (req, res) => {
 
 const switchRole = async (req, res) => {
   try {
-    const { newRole } = req.body;
-    const user = await userModel.findById(req.params.id);
+    const { email, newRole } = req.body;
 
     if (!["tenant", "landlord"].includes(newRole)) {
-      return res.status(400).json({ message: "Invalid role" });
+      return res.status(400).json({
+        success: false,
+        message: "Invalid role. Must be 'tenant' or 'landlord'.",
+      });
+    }
+
+    const user = await userModel.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
     }
 
     if (!user.roles.includes(newRole)) {
@@ -167,12 +178,44 @@ const switchRole = async (req, res) => {
     await user.save();
 
     res.status(200).json({
-      message: `Switched to ${newRole}`,
-      currentRole: user.currentRole,
-      role: user.roles,
+      success: true,
+      message: `Role switched to ${newRole}`,
+      user,
     });
   } catch (error) {
     console.error("Error switching user:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+const removeFromFavorites = async (req, res) => {
+  const { userId, propertyId } = req.body;
+
+  try {
+    const user = await userModel.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    user.favorites = user.favorites.filter(
+      (fav) => fav.toString() !== propertyId
+    );
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Property removed from favorites",
+      favorites: user.favorites,
+    });
+  } catch (error) {
+    console.error("Error removing property from favorites:", error);
     return res.status(500).json({
       success: false,
       message: "Internal server error",
@@ -187,4 +230,5 @@ module.exports = {
   updateUser,
   deleteUser,
   switchRole,
+  removeFromFavorites,
 };
