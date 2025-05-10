@@ -1,27 +1,36 @@
 {
-  "name": "backend",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "paymentv4",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "start": "nodemon /index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "bcrypt": "^5.1.1",
-    "cloudinary": "^2.6.0",
     "cors": "^2.8.5",
-    "datauri": "^4.1.0",
+    "crypto-js": "^4.2.0",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
-    "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.13.2",
-    "multer": "^1.4.5-lts.2",
-    "parser": "^0.1.4"
+    "nodemailer": "^7.0.3",
+    "nodemon": "^3.1.10",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-router": "^7.6.0",
+    "react-router-dom": "^7.6.0",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.9"
+    "@eslint/js": "^9.25.0",
+    "@types/react": "^19.1.2",
+    "@types/react-dom": "^19.1.2",
+    "@vitejs/plugin-react": "^4.4.1",
+    "eslint": "^9.25.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.19",
+    "globals": "^16.0.0",
+    "vite": "^6.3.5"
   }
 }
