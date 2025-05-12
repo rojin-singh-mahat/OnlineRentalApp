@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration Successful</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f1f5f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .card {
+            background-color: white;
+            padding: 2rem 3rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 400px;
+        }
+
+        .card h1 {
+            color: #10b981;
+            margin-bottom: 1rem;
+        }
+
+        .card p {
+            font-size: 1rem;
+            color: #334155;
+            margin-bottom: 2rem;
+        }
+
+        .card a {
+            text-decoration: none;
+            background-color: #3b82f6;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: bold;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        .card a:hover {
+            background-color: #2563eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>🎉 Registered Successfully!</h1>
+        <p>Your account has been created. You may now proceed to login.</p>
+        <a href="login.html">Go to Login</a>
+    </div>
+
+    <script>
+        window.addEventListener("DOMContentLoaded", async () => {
+      const fullname = localStorage.getItem("name");
+      const phoneNumber = localStorage.getItem("phone");
+      const email = localStorage.getItem("email");
+      const password = localStorage.getItem("password");
+
+      if (!fullname || !phoneNumber || !email || !password) {
+        alert("Missing user data! Can't create account.");
+        return;
+      }
+
+      try {
+        const response = await fetch("http://localhost:3000/user/registerUser", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ fullname, phoneNumber, email, password })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          console.log("User registered successfully!", data);
+          localStorage.removeItem("name");
+          localStorage.removeItem("phone");
+          localStorage.removeItem("email");
+          localStorage.removeItem("password");
+
+          // Redirect to dashboard/login or show confirmation
+          window.location.href = "./accountCreated.html"; // or wherever
+        } else {
+          console.error("Registration failed:", data.message);
+          alert("Registration failed: " + data.message);
+        }
+      } catch (err) {
+        console.error("Error registering user:", err);
+        alert("Something went wrong. Check console.");
+      }
+    });
+    </script>
+</body>
+</html>

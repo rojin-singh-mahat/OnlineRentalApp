@@ -311,6 +311,11 @@
                 </button>
             </form>
 
+            <!-- Sign up link -->
+            <p class="sign-up-link">
+                Don't have an account? <a href="./signup.html" class="sign-up">Create an account</a>
+            </p>
+
             <div class="divider">
                 or continue with
             </div>
@@ -372,17 +377,34 @@
 
             // If form is valid, proceed with login
             if (isValid) {
-                // Here you would typically send the data to your server
-                console.log('Login submitted:', {
-                    email,
-                    password,
-                    rememberMe
+                fetch("http://localhost:3000/auth/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password,
+                        remember: rememberMe
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Login failed!");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    alert("Login successful! Redirecting...");
+                    window.location.href = "./Main.html"; // Uncomment when ready
+                    console.log(data); // Just for vibes — remove when live
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("Login failed! Check your credentials.");
                 });
-
-                // Show success message (in a real app, you would redirect or show a proper message)
-                alert('Login successful! Redirecting...');
-                // window.location.href = '/dashboard'; // Redirect to dashboard
             }
+
         });
 
         // Add event listeners to social buttons
