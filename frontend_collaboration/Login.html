@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | CozyKeys</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+         :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4cc9f0;
+            --text-color: #2b2d42;
+            --light-gray: #f8f9fa;
+            --medium-gray: #e9ecef;
+            --dark-gray: #adb5bd;
+            --white: #ffffff;
+            --error-color: #ef233c;
+            --success-color: #4caf50;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-gray);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        .container {
+            display: flex;
+            gap: 2rem;
+            height: 100vh;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .login-form {
+            flex: 1;
+            max-width: 500px;
+            background-color: var(--white);
+            border-radius: 15px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+        }
+        
+        .login-form:hover {
+            transform: translateY(-5px);
+        }
+        
+        .brand {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .brand h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+        
+        .brand p {
+            color: var(--dark-gray);
+            font-size: 1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1.2rem;
+            border: 2px solid var(--medium-gray);
+            border-radius: 50px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        
+        .form-control.error {
+            border-color: var(--error-color);
+        }
+        
+        .error-message {
+            color: var(--error-color);
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+            display: none;
+        }
+        
+        .form-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .remember-me input {
+            width: 1rem;
+            height: 1rem;
+            accent-color: var(--primary-color);
+        }
+        
+        .forgot-password {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+        
+        .forgot-password:hover {
+            color: var(--secondary-color);
+            text-decoration: underline;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 50px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: var(--white);
+            margin-bottom: 1.5rem;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 1.5rem 0;
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+        
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid var(--medium-gray);
+            margin: 0 1rem;
+        }
+        
+        .social-login {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .social-btn {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--white);
+            border: 1px solid var(--medium-gray);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .social-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .social-btn.facebook {
+            color: #1877f2;
+        }
+        
+        .social-btn.google {
+            color: #db4437;
+        }
+        
+        .social-btn.twitter {
+            color: #1da1f2;
+        }
+        
+        .terms {
+            font-size: 0.8rem;
+            color: var(--dark-gray);
+            text-align: center;
+            line-height: 1.4;
+        }
+        
+        .terms a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .terms a:hover {
+            text-decoration: underline;
+        }
+        
+        .hero-image {
+            flex: 1;
+            max-width: 600px;
+            height: 100%;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+        
+        .hero-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .hero-image:hover img {
+            transform: scale(1.05);
+        }
+        
+        @media (max-width: 992px) {
+            .container {
+                flex-direction: column;
+                height: auto;
+                padding: 1.5rem;
+            }
+            .hero-image {
+                display: none;
+            }
+            .login-form {
+                width: 100%;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="login-form">
+            <div class="brand">
+                <h1>CozyKeys</h1>
+                <p>Welcome back! Please login to your account.</p>
+            </div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" class="form-control" placeholder="Enter your email" required>
+                    <div class="error-message" id="email-error">Please enter a valid email address</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="Enter your password" required>
+                    <div class="error-message" id="password-error">Password must be at least 6 characters</div>
+                </div>
+
+                <div class="form-footer">
+                    <div class="remember-me">
+                        <input type="checkbox" id="remember">
+                        <label for="remember">Remember me</label>
+                    </div>
+                    <a href="#" class="forgot-password">Forgot password?</a>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+            </form>
+
+            <div class="divider">
+                or continue with
+            </div>
+
+            <div class="social-login">
+                <button class="social-btn facebook">
+                    <i class="fab fa-facebook-f"></i>
+                </button>
+                <button class="social-btn google">
+                    <i class="fab fa-google"></i>
+                </button>
+                <button class="social-btn twitter">
+                    <i class="fab fa-twitter"></i>
+                </button>
+            </div>
+
+            <p class="terms">
+                By logging in, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+            </p>
+        </div>
+
+        <div class="hero-image">
+            <img src="https://images.unsplash.com/photo-1499916078039-922301b0eb9b?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fGFwYXJ0bWVudHxlbnwwfHwwfHx8MA%3D%3D" alt="Cozy workspace with keyboard">
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Get form values
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const rememberMe = document.getElementById('remember').checked;
+
+            // Simple validation
+            let isValid = true;
+
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                document.getElementById('email').classList.add('error');
+                document.getElementById('email-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('email').classList.remove('error');
+                document.getElementById('email-error').style.display = 'none';
+            }
+
+            // Password validation
+            if (password.length < 6) {
+                document.getElementById('password').classList.add('error');
+                document.getElementById('password-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('password').classList.remove('error');
+                document.getElementById('password-error').style.display = 'none';
+            }
+
+            // If form is valid, proceed with login
+            if (isValid) {
+                // Here you would typically send the data to your server
+                console.log('Login submitted:', {
+                    email,
+                    password,
+                    rememberMe
+                });
+
+                // Show success message (in a real app, you would redirect or show a proper message)
+                alert('Login successful! Redirecting...');
+                // window.location.href = '/dashboard'; // Redirect to dashboard
+            }
+        });
+
+        // Add event listeners to social buttons
+        document.querySelectorAll('.social-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const platform = this.classList.contains('facebook') ? 'Facebook' :
+                    this.classList.contains('google') ? 'Google' : 'Twitter';
+                alert(`Logging in with ${platform} (this is a demo)`);
+            });
+        });
+    </script>
+</body>
+
+</html>

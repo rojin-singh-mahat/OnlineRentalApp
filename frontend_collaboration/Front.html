@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CozyKeys</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+            line-height: 1.6;
+            background-image: url("https://plus.unsplash.com/premium_photo-1661877360520-f70603f7c0d8?w=1200&auto=format&fit=crop&q=80&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aG91c2UlMjBiYWNrZ3JvdW5kJTIwaW1hZ2V8ZW58MHx8MHx8fDA%3D");
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+        }
+        
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: -1;
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 50px;
+            background-color: white;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.3s ease;
+        }
+        
+        .logo:hover {
+            transform: scale(1.02);
+        }
+        
+        .logo img {
+            height: 50px;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+        
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            gap: 25px;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .navbar ul li {
+            display: inline;
+            position: relative;
+        }
+        
+        .navbar ul li a {
+            text-decoration: none;
+            font-weight: 600;
+            color: #444;
+            padding: 8px 12px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .navbar ul li a.active,
+        .navbar ul li a:hover {
+            color: #000;
+            background-color: #f0f0f0;
+            border-bottom: 2px solid #ff6b6b;
+        }
+        
+        .dropdown {
+            display: none;
+            position: absolute;
+            background: white;
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.12);
+            border-radius: 8px;
+            min-width: 180px;
+            z-index: 10;
+            top: 100%;
+            left: 0;
+            overflow: hidden;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .dropdown a {
+            display: block;
+            padding: 12px 15px;
+            color: #555;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+        
+        .dropdown a:hover {
+            background: #f8f8f8;
+            color: #000;
+            border-left: 3px solid #ff6b6b;
+            padding-left: 20px;
+        }
+        
+        .show-dropdown {
+            display: block;
+        }
+        
+        .hero {
+            text-align: center;
+            color: white;
+            padding: 180px 20px 120px;
+            position: relative;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.8s ease-out;
+        }
+        
+        .hero p {
+            font-size: 1.4rem;
+            max-width: 700px;
+            margin: 0 auto 30px;
+            opacity: 0.9;
+            animation: slideUp 1s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .explore-btn {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 14px 35px;
+            background: linear-gradient(to right, #ff6b6b, #ff8e8e);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 1.5s ease-out;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .explore-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(to right, #ff8e8e, #ff6b6b);
+        }
+        
+        .info-section {
+            display: flex;
+            justify-content: space-between;
+            padding: 80px 50px;
+            background: rgba(255, 255, 255, 0.9);
+            gap: 30px;
+            margin: 50px auto;
+            max-width: 1200px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .info-box {
+            flex: 1;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .info-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .info-box h2 {
+            color: #333;
+            margin-bottom: 15px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .info-box h2::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: #ff6b6b;
+            border-radius: 3px;
+        }
+        
+        .info-box p {
+            color: #666;
+            line-height: 1.7;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(to right, #2c3e50, #4ca1af);
+            color: white;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        
+        .footer-links a:hover {
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        footer p {
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px 20px;
+            }
+            .navbar ul {
+                flex-direction: column;
+                gap: 10px;
+                width: 100%;
+            }
+            .info-section {
+                flex-direction: column;
+                padding: 40px 20px;
+                gap: 20px;
+                margin: 30px 20px;
+            }
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            .hero p {
+                font-size: 1.1rem;
+            }
+            .hero {
+                padding: 120px 20px 80px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="navbar">
+            <div class="logo">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvnfHVcHnLbOxA85ZKfO3NPLwXw2JRkAoxnQ&s" alt="CozyKeys Logo">
+                <h1>CozyKeys</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li class="account">
+                        <a href="#" id="account-btn">Account ⬇</a>
+                        <div class="dropdown" id="account-dropdown">
+                            <a href="#" onclick="login()">Login</a>
+                            <a href="#" onclick="signup()">Signup</a>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <h1>Find Your Perfect Getaway</h1>
+        <p>Discover handpicked homes that offer comfort, style, and unforgettable experiences</p>
+
+    </section>
+
+    <section class="info-section">
+        <div class="info-box">
+            <h2>Why Choose CozyKeys?</h2>
+            <p>We meticulously select properties that combine comfort, style, and functionality. Every home in our collection meets strict quality standards to ensure your stay is nothing short of perfect.</p>
+        </div>
+        <div class="info-box">
+            <h2>Our Promise</h2>
+            <p>At CozyKeys, we're committed to turning your stay into a memorable experience. From cozy cottages to luxurious penthouses, we have the perfect key to your dream getaway.</p>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-links">
+            <a href="#">Contact us</a>
+            <a href="#">About us</a>
+            <a href="#">Services</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+        </div>
+        <p>© 2025 CozyKeys. All Rights Reserved. Making your stays unforgettable.</p>
+    </footer>
+
+    <script>
+        function explore() {
+            window.location.href = "properties.html";
+        }
+
+        function login() {
+            window.location.href = "Login.html";
+        }
+
+        function signup() {
+            window.location.href = "signup.html";
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            document.querySelectorAll(".navbar ul li").forEach(li => {
+                li.addEventListener("click", function(e) {
+                    if (e.target.tagName === 'A' && !e.target.parentElement.classList.contains('account')) {
+                        return;
+                    }
+
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    document.querySelectorAll(".dropdown").forEach(drop => {
+                        if (drop !== this.querySelector(".dropdown")) {
+                            drop.classList.remove("show-dropdown");
+                        }
+                    });
+
+                    const dropdown = this.querySelector(".dropdown");
+                    if (dropdown) {
+                        dropdown.classList.toggle("show-dropdown");
+                    }
+                });
+            });
+
+            document.addEventListener("click", (e) => {
+                if (!e.target.closest(".navbar ul li")) {
+                    document.querySelectorAll(".dropdown").forEach(drop => {
+                        drop.classList.remove("show-dropdown");
+                    });
+                }
+            });
+
+            const animateOnScroll = () => {
+                const elements = document.querySelectorAll('.info-box, .hero h1, .hero p, .explore-btn');
+
+                elements.forEach(element => {
+                    const elementPosition = element.getBoundingClientRect().top;
+                    const screenPosition = window.innerHeight / 1.3;
+
+                    if (elementPosition < screenPosition) {
+                        element.style.opacity = '1';
+                        element.style.transform = 'translateY(0)';
+                    }
+                });
+            };
+
+            document.querySelectorAll('.info-box, .hero h1, .hero p, .explore-btn').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+            });
+
+            window.addEventListener('scroll', animateOnScroll);
+            animateOnScroll();
+        });
+    </script>
+</body>
+
+</html>

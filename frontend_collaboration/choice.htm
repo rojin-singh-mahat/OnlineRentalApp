@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to CozyStay Rentals</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+         :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #3f37c9;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            color: var(--dark);
+            background-image: url('https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 0;
+        }
+        
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .logo {
+            width: 80px;
+            margin-bottom: 1.5rem;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            margin-bottom: 2.5rem;
+            color: #555;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .role-selection {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .role-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            width: 280px;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        
+        .role-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            border-color: var(--primary);
+        }
+        
+        .role-card i {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+        
+        .role-card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+        
+        .role-card p {
+            color: #666;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+        }
+        
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.4);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            box-shadow: none;
+        }
+        
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        footer {
+            margin-top: 3rem;
+            color: white;
+            font-size: 0.9rem;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 2rem 1.5rem;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            .role-selection {
+                flex-direction: column;
+                align-items: center;
+            }
+            .role-card {
+                width: 100%;
+                max-width: 350px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvnfHVcHnLbOxA85ZKfO3NPLwXw2JRkAoxnQ&s" alt="CozyStay Logo" class="logo">
+        <h1>Welcome to CozyStay Rentals</h1>
+        <p class="subtitle">Find your perfect home away from home. Book beautiful apartments and villas with just a few clicks.</p>
+
+        <div class="role-selection">
+            <div class="role-card" onclick="goToAdmin()">
+                <i class="fas fa-user-shield"></i>
+                <h2>Admin Portal</h2>
+                <p>Manage properties, bookings, and user accounts. Access the admin dashboard to oversee the rental system.</p>
+                <button class="btn">Continue as Admin</button>
+            </div>
+
+            <div class="role-card" onclick="goToUser()">
+                <i class="fas fa-user"></i>
+                <h2>User Portal</h2>
+                <p>Browse and book amazing rentals. Create an account to save favorites and manage your bookings.</p>
+                <button class="btn btn-outline">Continue as User</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2025 CozyStay Rentals. All rights reserved.
+    </footer>
+
+    <script>
+        function goToAdmin() {
+            Swal.fire({
+                title: 'Admin Access',
+                text: 'You are being redirected to the admin login page.',
+                icon: 'info',
+                showConfirmButton: false,
+                timer: 1500,
+                timerProgressBar: true,
+                willClose: () => {
+                    window.location.href = "admin-login.html";
+                }
+            });
+        }
+
+        function goToUser() {
+            Swal.fire({
+                title: 'Welcome Guest',
+                text: 'You are being redirected to the user portal.',
+                icon: 'success',
+                showConfirmButton: false,
+                timer: 1500,
+                timerProgressBar: true,
+                willClose: () => {
+                    window.location.href = "user-login.html";
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
