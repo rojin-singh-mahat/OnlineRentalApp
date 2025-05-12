@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Luxury Apartments | Premium Properties in Nepal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+         :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #e74c3c;
+            --accent-color: #3498db;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f9f9f9;
+            padding: 40px 0;
+        }
+        
+        .main {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .page-title {
+            font-size: 2.5rem;
+            color: var(--dark-color);
+            margin-bottom: 15px;
+        }
+        
+        .page-subtitle {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .filter-section {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 8px 20px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+        
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 30px;
+            justify-content: center;
+        }
+        
+        .property-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .property-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .property-image-container {
+            position: relative;
+            height: 250px;
+            overflow: hidden;
+        }
+        
+        .property-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+        
+        .property-card:hover .property-image {
+            transform: scale(1.03);
+        }
+        
+        .property-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            z-index: 2;
+        }
+        
+        .heart-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            border: none;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+        }
+        
+        .heart-btn:hover {
+            background: #f8f8f8;
+        }
+        
+        .favorite-btn {
+            cursor: pointer;
+            font-size: 18px;
+            transition: color 0.3s;
+        }
+        
+        .favorite-active i {
+            color: red;
+        }
+        
+        .property-info {
+            padding: 20px;
+        }
+        
+        .property-title {
+            font-size: 22px;
+            color: var(--dark-color);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .property-location {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #7f8c8d;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        
+        .property-description {
+            color: #7f8c8d;
+            margin-bottom: 15px;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        
+        .property-features {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .feature-icon {
+            color: var(--accent-color);
+            font-size: 16px;
+        }
+        
+        .feature-text {
+            color: var(--dark-color);
+            font-size: 14px;
+        }
+        
+        .price-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+        
+        .price-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .original-price {
+            color: #95a5a6;
+            text-decoration: line-through;
+            font-size: 16px;
+        }
+        
+        .current-price {
+            color: var(--secondary-color);
+            font-size: 20px;
+            font-weight: 700;
+        }
+        
+        .price-per-sqm {
+            color: #7f8c8d;
+            font-size: 12px;
+        }
+        
+        .contact-btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        
+        .contact-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .property-map {
+            height: 180px;
+            width: 100%;
+            border-radius: 8px;
+            margin-top: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .property-map .leaflet-container {
+            height: 100%;
+            width: 100%;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 40px;
+            gap: 10px;
+        }
+        
+        .pagination-btn {
+            padding: 8px 15px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .pagination-btn:hover,
+        .pagination-btn.active {
+            background: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            .property-features {
+                grid-template-columns: 1fr;
+            }
+            .price-section {
+                flex-direction: column;
+                gap: 12px;
+                align-items: flex-start;
+            }
+            .contact-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            .page-title {
+                font-size: 2rem;
+            }
+        }
+        
+        .toast-message {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            opacity: 1;
+            transition: opacity 0.5s;
+            z-index: 1000;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main">
+        <div class="page-header">
+            <h1 class="page-title">Premium Luxury Apartments in Nepal</h1>
+            <p class="page-subtitle">Discover our exclusive collection of high-end properties in prime locations across Nepal</p>
+        </div>
+
+        <div class="container">
+            <!-- Property Card 1 - Lainchaur -->
+            <div class="property-card">
+                <div class="property-image-container">
+                    <span class="property-badge">Featured</span>
+                    <button class="heart-btn favorite-btn" data-apartment-name="Lainchaur Heights">
+                        <i class="far fa-heart"></i>
+                    </button>
+                    <img src="https://plus.unsplash.com/premium_photo-1674676471104-3c4017645e6f?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8YXBhcnRtZW50fGVufDB8fDB8fHww " alt="Modern luxury apartment in Lainchaur" class="property-image"
+                        onclick="apartment()">
+                </div>
+                <div class="property-info">
+                    <h2 class="property-title">Lainchaur Heights</h2>
+                    <div class="property-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Lainchaur, Kathmandu</span>
+                    </div>
+                    <p class="property-description">Premium apartment in the heart of Kathmandu with modern amenities and excellent city views. Walking distance to restaurants and cultural sites.</p>
+
+                    <div class="property-features">
+                        <div class="feature-item">
+                            <i class="fas fa-bed feature-icon"></i>
+                            <span class="feature-text">3 Bedrooms</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-bath feature-icon"></i>
+                            <span class="feature-text">2 Bathrooms</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-vector-square feature-icon"></i>
+                            <span class="feature-text">120 sq.m</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-car feature-icon"></i>
+                            <span class="feature-text">1 Parking</span>
+                        </div>
+                    </div>
+
+                    <div class="property-map" id="map1"></div>
+
+                    <div class="price-section">
+                        <div class="price-container">
+                            <span class="original-price">Rs 2,50,00,000</span>
+                            <span class="current-price">Rs 2,30,00,000</span>
+                            <span class="price-per-sqm">(Rs 1,91,666/sq.m)</span>
+                        </div>
+                        <button class="contact-btn" onclick="Broker()">
+                            <i class="fas fa-phone-alt"></i> Contact
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Property Card 2 - Sinamangal -->
+            <div class="property-card">
+                <div class="property-image-container">
+                    <span class="property-badge">New Listing</span>
+                    <button class="heart-btn favorite-btn" data-apartment-name="Sinamangal Skyline">
+                        <i class="far fa-heart"></i>
+                    </button>
+                    <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8YXBhcnRtZW50fGVufDB8fDB8fHww" alt="Modern apartment in Sinamangal" class="property-image" onclick="apartment()">
+                </div>
+                <div class="property-info">
+                    <h2 class="property-title">Sinamangal Skyline</h2>
+                    <div class="property-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Sinamangal, Kathmandu</span>
+                    </div>
+                    <p class="property-description">Contemporary apartment with excellent connectivity to airport and business districts. Features modern finishes and smart home technology.</p>
+
+                    <div class="property-features">
+                        <div class="feature-item">
+                            <i class="fas fa-bed feature-icon"></i>
+                            <span class="feature-text">2 Bedrooms</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-bath feature-icon"></i>
+                            <span class="feature-text">2 Bathrooms</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-vector-square feature-icon"></i>
+                            <span class="feature-text">90 sq.m</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-wifi feature-icon"></i>
+                            <span class="feature-text">Smart Home</span>
+                        </div>
+                    </div>
+
+                    <div class="property-map" id="map2"></div>
+
+                    <div class="price-section">
+                        <div class="price-container">
+                            <span class="current-price">Rs 1,80,00,000</span>
+                            <span class="price-per-sqm">(Rs 2,00,000/sq.m)</span>
+                        </div>
+                        <button class="contact-btn" onclick="Broker()">
+                            <i class="fas fa-phone-alt"></i> Contact
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Property Card 3 - Baluwatar -->
+            <div class="property-card">
+                <div class="property-image-container">
+                    <span class="property-badge">Premium</span>
+                    <button class="heart-btn favorite-btn" data-apartment-name="Baluwatar Elite">
+                        <i class="far fa-heart"></i>
+                    </button>
+                    <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGFwYXJ0bWVudHxlbnwwfHwwfHx8MA%3D%3D" alt="Luxury apartment in Baluwatar" class="property-image" onclick="apartment()">
+                </div>
+                <div class="property-info">
+                    <h2 class="property-title">Baluwatar Elite</h2>
+                    <div class="property-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Baluwatar, Kathmandu</span>
+                    </div>
+                    <p class="property-description">Exclusive apartment in Kathmandu's most prestigious neighborhood. High-end finishes and 24/7 security with diplomatic area proximity.</p>
+
+                    <div class="property-features">
+                        <div class="feature-item">
+                            <i class="fas fa-bed feature-icon"></i>
+                            <span class="feature-text">3 Bedrooms</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-bath feature-icon"></i>
+                            <span class="feature-text">3 Bathrooms</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-vector-square feature-icon"></i>
+                            <span class="feature-text">150 sq.m</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-shield-alt feature-icon"></i>
+                            <span class="feature-text">24/7 Security</span>
+                        </div>
+                    </div>
+
+                    <div class="property-map" id="map3"></div>
+
+                    <div class="price-section">
+                        <div class="price-container">
+                            <span class="original-price">Rs 3,20,00,000</span>
+                            <span class="current-price">Rs 2,95,00,000</span>
+                            <span class="price-per-sqm">(Rs 1,96,666/sq.m)</span>
+                        </div>
+                        <button class="contact-btn" onclick="Broker()">
+                            <i class="fas fa-phone-alt"></i> Contact
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Property Card 4 - Pokhara -->
+            <div class="property-card">
+                <div class="property-image-container">
+                    <span class="property-badge">Lake View</span>
+                    <button class="heart-btn favorite-btn" data-apartment-name="Pokhara Lakeside Residency">
+                        <i class="far fa-heart"></i>
+                    </button>
+                    <img src="https://images.unsplash.com/photo-1502672023488-70e25813eb80?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGFwYXJ0bWVudHxlbnwwfHwwfHx8MA%3D%3D" alt="Lakeside apartment in Pokhara" class="property-image" onclick="apartment()">
+                </div>
+                <div class="property-info">
+                    <h2 class="property-title">Pokhara Lakeside Residency</h2>
+                    <div class="property-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Lakeside, Pokhara</span>
+                    </div>
+                    <p class="property-description">Beautiful apartment with stunning views of Phewa Lake and Annapurna range. Walking distance to restaurants and nightlife.</p>
+
+                    <div class="property-features">
+                        <div class="feature-item">
+                            <i class="fas fa-bed feature-icon"></i>
+                            <span class="feature-text">2 Bedrooms</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-bath feature-icon"></i>
+                            <span class="feature-text">2 Bathrooms</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-vector-square feature-icon"></i>
+                            <span class="feature-text">95 sq.m</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-umbrella-beach feature-icon"></i>
+                            <span class="feature-text">Lake View</span>
+                        </div>
+                    </div>
+
+                    <div class="property-map" id="map4"></div>
+
+                    <div class="price-section">
+                        <div class="price-container">
+                            <span class="current-price">Rs 1,65,00,000</span>
+                            <span class="price-per-sqm">(Rs 1,73,684/sq.m)</span>
+                        </div>
+                        <button class="contact-btn" onclick="Broker()">
+                            <i class="fas fa-phone-alt"></i> Contact
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Property Card 5 - Chitwan -->
+            <div class="property-card">
+                <div class="property-image-container">
+                    <span class="property-badge">Nature View</span>
+                    <button class="heart-btn favorite-btn" data-apartment-name="Chitwan Jungle View">
+                        <i class="far fa-heart"></i>
+                    </button>
+                    <img src="https://images.unsplash.com/photo-1574362848149-11496d93a7c7?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fGFwYXJ0bWVudHxlbnwwfHwwfHx8MA%3D%3D" alt="Jungle view apartment in Chitwan" class="property-image"
+                        onclick="apartment()">
+                </div>
+                <div class="property-info">
+                    <h2 class="property-title">Chitwan Jungle View</h2>
+                    <div class="property-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Sauraha, Chitwan</span>
+                    </div>
+                    <p class="property-description">Unique apartment with views of Chitwan National Park. Experience nature while enjoying modern comforts and wildlife sightings.</p>
+
+                    <div class="property-features">
+                        <div class="feature-item">
+                            <i class="fas fa-bed feature-icon"></i>
+                            <span class="feature-text">2 Bedrooms</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-bath feature-icon"></i>
+                            <span class="feature-text">1 Bathroom</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-vector-square feature-icon"></i>
+                            <span class="feature-text">85 sq.m</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-tree feature-icon"></i>
+                            <span class="feature-text">Jungle View</span>
+                        </div>
+                    </div>
+
+                    <div class="property-map" id="map5"></div>
+
+                    <div class="price-section">
+                        <div class="price-container">
+                            <span class="original-price">Rs 1,20,00,000</span>
+                            <span class="current-price">Rs 1,05,00,000</span>
+                            <span class="price-per-sqm">(Rs 1,23,529/sq.m)</span>
+                        </div>
+                        <button class="contact-btn" onclick="Broker()">
+                            <i class="fas fa-phone-alt"></i> Contact
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Property Card 6 - Dang -->
+            <div class="property-card">
+                <div class="property-image-container">
+                    <span class="property-badge">New Development</span>
+                    <button class="heart-btn favorite-btn" data-apartment-name="Dang Valley Apartments">
+                        <i class="far fa-heart"></i>
+                    </button>
+                    <img src="https://images.unsplash.com/photo-1524549207884-e7d1130ae2f3?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NTV8fGFwYXJ0bWVudHxlbnwwfHwwfHx8MA%3D%3D" alt="Valley view apartment in Dang" class="property-image" onclick="apartment()">
+                </div>
+                <div class="property-info">
+                    <h2 class="property-title">Dang Valley Apartments</h2>
+                    <div class="property-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Tulsipur, Dang</span>
+                    </div>
+                    <p class="property-description">Modern apartment complex in the growing city of Tulsipur. Excellent investment opportunity in western Nepal's emerging market.</p>
+
+                    <div class="property-features">
+                        <div class="feature-item">
+                            <i class="fas fa-bed feature-icon"></i>
+                            <span class="feature-text">2 Bedrooms</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-bath feature-icon"></i>
+                            <span class="feature-text">1 Bathroom</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-vector-square feature-icon"></i>
+                            <span class="feature-text">75 sq.m</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-chart-line feature-icon"></i>
+                            <span class="feature-text">Investment Property</span>
+                        </div>
+                    </div>
+
+                    <div class="property-map" id="map6"></div>
+
+                    <div class="price-section">
+                        <div class="price-container">
+                            <span class="original-price">Rs 90,00,000</span>
+                            <span class="current-price">Rs 85,00,000</span>
+                            <span class="price-per-sqm">(Rs 1,13,333/sq.m)</span>
+                        </div>
+                        <button class="contact-btn" onclick="Broker()">
+                            <i class="fas fa-phone-alt"></i> Contact
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS for maps -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        function Broker() {
+            window.location.href = "BrokerApa.html";
+        }
+        document.addEventListener("DOMContentLoaded", function() {
+            // Initialize maps for each property
+            const propertyLocations = [{
+                id: 'map1',
+                coords: [27.7172, 85.3240], // Lainchaur coordinates
+                name: "Lainchaur Heights",
+                desc: "Premium apartment in central Kathmandu"
+            }, {
+                id: 'map2',
+                coords: [27.6980, 85.3545], // Sinamangal coordinates
+                name: "Sinamangal Skyline",
+                desc: "Modern apartment near airport"
+            }, {
+                id: 'map3',
+                coords: [27.7300, 85.3300], // Baluwatar coordinates
+                name: "Baluwatar Elite",
+                desc: "Luxury apartment in diplomatic area"
+            }, {
+                id: 'map4',
+                coords: [28.2096, 83.9856], // Pokhara coordinates
+                name: "Pokhara Lakeside Residency",
+                desc: "Beautiful lakeside apartment"
+            }, {
+                id: 'map5',
+                coords: [27.5810, 84.5070], // Chitwan coordinates
+                name: "Chitwan Jungle View",
+                desc: "Nature-facing apartment near national park"
+            }, {
+                id: 'map6',
+                coords: [28.1300, 82.3000], // Dang coordinates
+                name: "Dang Valley Apartments",
+                desc: "Emerging market investment property"
+            }];
+
+            propertyLocations.forEach(location => {
+                const map = L.map(location.id).setView(location.coords, 15);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OpenStreetMap contributors'
+                }).addTo(map);
+
+                L.marker(location.coords).addTo(map)
+                    .bindPopup(`<b>${location.name}</b><br>${location.desc}`)
+                    .openPopup();
+            });
+
+            // Favorite button functionality
+            const favoriteButtons = document.querySelectorAll(".favorite-btn");
+            favoriteButtons.forEach(button => {
+                // Check localStorage for saved favorites
+                const apartmentName = button.dataset.apartmentName;
+                if (localStorage.getItem(`favorite_${apartmentName}`)) {
+                    button.classList.add("favorite-active");
+                    const icon = button.querySelector("i");
+                    icon.classList.remove("far");
+                    icon.classList.add("fas");
+                }
+
+                button.addEventListener("click", function() {
+                    const apartmentName = this.dataset.apartmentName;
+                    this.classList.toggle("favorite-active");
+                    const icon = this.querySelector("i");
+
+                    if (this.classList.contains("favorite-active")) {
+                        icon.classList.remove("far");
+                        icon.classList.add("fas");
+                        localStorage.setItem(`favorite_${apartmentName}`, 'true');
+                        showToast(`❤️ Added ${apartmentName} to favorites`);
+                    } else {
+                        icon.classList.remove("fas");
+                        icon.classList.add("far");
+                        localStorage.removeItem(`favorite_${apartmentName}`);
+                        showToast(`❌ Removed ${apartmentName} from favorites`);
+                    }
+                });
+            });
+
+            // Contact button functionality
+            const contactButtons = document.querySelectorAll(".contact-btn");
+            contactButtons.forEach(button => {
+                button.addEventListener("click", function() {
+                    const propertyCard = this.closest(".property-card");
+                    const propertyName = propertyCard.querySelector(".property-title").textContent;
+                    showToast(`Contacting agent for ${propertyName}`);
+                });
+            });
+
+            function showToast(message) {
+                let toast = document.createElement("div");
+                toast.className = "toast-message";
+                toast.innerText = message;
+                document.body.appendChild(toast);
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    setTimeout(() => toast.remove(), 500);
+                }, 3000);
+            }
+        });
+
+        function apartment() {
+            window.location.href = "ApartmentReview.html";
+        }
+    </script>
+</body>
+
+</html>

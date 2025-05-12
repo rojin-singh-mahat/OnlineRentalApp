@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .container {
+            display: flex;
+            gap: 51px;
+            justify-content: center;
+            align-items: center;
+            margin-top: 150px;
+            border: 1px solid red;
+            height: 50vh;
+            width: 50vh;
+            align-items: center;
+            margin-left: 550px;
+        }
+        
+        button {
+            height: 90px;
+            width: 100px;
+            border-radius: 31px;
+            background-color: aquamarine;
+            border-color: rgb(215, 215, 215);
+        }
+        
+        button:hover {
+            background-color: green;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="admin">
+            <button onmouseover="button()">Admin</button>
+        </div>
+        <div class="user">
+            <button onclick="button()">User</button>
+        </div>
+    </div>
+</body>
+<script>
+    let btn = document.querySelectorAll('button');
+
+    function button() {
+        alert("button clicked");
+    }
+</script>
+
+</html>

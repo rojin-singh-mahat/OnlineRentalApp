@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Payment Gateway</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+         :root {
+            --primary: #4361ee;
+            --primary-dark: #3a0ca3;
+            --success: #4cc9f0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --white: #ffffff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .payment-container {
+            max-width: 500px;
+            margin: 40px auto;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+        
+        .payment-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .payment-header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+        
+        .payment-header p {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+        
+        .payment-body {
+            padding: 25px;
+        }
+        
+        .payment-card {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.9rem;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--light-gray);
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background-color: var(--light);
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+            background-color: var(--white);
+        }
+        
+        .input-icon {
+            position: absolute;
+            right: 15px;
+            top: 38px;
+            color: var(--gray);
+        }
+        
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 1em;
+        }
+        
+        .btn-pay {
+            display: block;
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        .btn-pay:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+        
+        .bank-logos {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .bank-logo {
+            width: 60px;
+            height: 40px;
+            object-fit: contain;
+            filter: grayscale(30%);
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+        
+        .bank-logo:hover {
+            filter: grayscale(0);
+            opacity: 1;
+        }
+        
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .success-icon {
+            font-size: 60px;
+            color: #4BB543;
+            margin-bottom: 20px;
+            animation: bounce 0.8s;
+        }
+        
+        .success-message h2 {
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+        
+        .success-message p {
+            color: var(--gray);
+            margin-bottom: 20px;
+        }
+        
+        .payment-details {
+            background: var(--light);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            text-align: left;
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed var(--light-gray);
+        }
+        
+        .detail-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .detail-label {
+            color: var(--gray);
+            font-weight: 500;
+        }
+        
+        .detail-value {
+            color: var(--dark);
+            font-weight: 600;
+        }
+        
+        @keyframes bounce {
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-20px);
+            }
+            60% {
+                transform: translateY(-10px);
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .payment-container {
+                margin: 20px;
+            }
+            .bank-logo {
+                width: 50px;
+                margin: 5px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="payment-container">
+        <div class="payment-header">
+            <h1>Secure Payment</h1>
+            <p>Complete your payment securely</p>
+        </div>
+
+        <div class="payment-body">
+            <div id="paymentForm">
+                <div class="payment-card">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" class="form-control" placeholder="" required>
+                        <i class="fas fa-user input-icon"></i>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" class="form-control" placeholder="" required>
+                        <i class="fas fa-phone input-icon"></i>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="account">Account Number</label>
+                        <input type="text" id="account" class="form-control" placeholder="" required>
+                        <i class="fas fa-wallet input-icon"></i>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bank">Bank Name</label>
+                        <select id="bank" class="form-control" required>
+                            <option value="">Select your bank</option>
+                            <option value="NIC Asia">NIC Asia Bank</option>
+                            <option value="Nabil">Nabil Bank</option>
+                            <option value="Himalayan">Himalayan Bank</option>
+                            <option value="Prabhu">Prabhu Bank</option>
+                            <option value="Global IME">Global IME Bank</option>
+                            <option value="other">Other Bank</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="amount">Payment Amount (NPR)</label>
+                        <input type="number" id="amount" class="form-control" placeholder="" required>
+                        <i class="fas fa-rupee-sign input-icon"></i>
+                    </div>
+                </div>
+
+
+
+                <button type="submit" class="btn-pay" id="submitBtn">
+                    <i class="fas fa-lock"></i> Pay Now
+                </button>
+            </div>
+
+            <div id="successMessage" class="success-message">
+                <div class="success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h2>Payment Successful!</h2>
+                <p>Your transaction has been completed successfully.</p>
+
+                <div class="payment-details" id="paymentDetails">
+                    <!-- Details will be inserted here by JavaScript -->
+                </div>
+
+                <button class="btn-pay" style="margin-top: 20px;" onclick="resetForm()">
+                    <i class="fas fa-receipt"></i> Make Another Payment
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('submitBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+
+            // Get form values
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const account = document.getElementById('account').value;
+            const bank = document.getElementById('bank').value;
+            const amount = document.getElementById('amount').value;
+
+            // Validate form
+            if (!name || !phone || !account || !bank || !amount) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            // Process payment (simulated)
+            processPayment(name, phone, account, bank, amount);
+        });
+
+        function processPayment(name, phone, account, bank, amount) {
+            // Simulate payment processing delay
+            document.getElementById('submitBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+
+            setTimeout(function() {
+                // Hide form and show success message
+                document.getElementById('paymentForm').style.display = 'none';
+                document.getElementById('successMessage').style.display = 'block';
+
+                // Display payment details
+                document.getElementById('paymentDetails').innerHTML = `
+                    <div class="detail-row">
+                        <span class="detail-label">Transaction ID:</span>
+                        <span class="detail-value">TXN${Math.floor(Math.random() * 1000000)}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Name:</span>
+                        <span class="detail-value">${name}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Phone:</span>
+                        <span class="detail-value">${phone}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Account:</span>
+                        <span class="detail-value">${account}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Bank:</span>
+                        <span class="detail-value">${bank}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Amount:</span>
+                        <span class="detail-value">NPR ${amount}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Date:</span>
+                        <span class="detail-value">${new Date().toLocaleString()}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Status:</span>
+                        <span class="detail-value" style="color: #4BB543;">Completed <i class="fas fa-check-circle"></i></span>
+                    </div>
+                `;
+            }, 1500);
+        }
+
+        function resetForm() {
+            document.getElementById('paymentForm').style.display = 'block';
+            document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('paymentForm').reset();
+            document.getElementById('submitBtn').innerHTML = '<i class="fas fa-lock"></i> Pay Now';
+        }
+    </script>
+</body>
+
+</html>
