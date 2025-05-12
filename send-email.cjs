@@ -1,35 +1,10 @@
- KamanaRamtel_FinalCode
-const express = require("express");
-const connectDB = require("./database/conn");
-const app = express();
-require("dotenv").config();
-
-app.use(express.json());
-
-const PORT = process.env.PORT || 5000;
-
-const startServer = async () => {
-  try {
-    await connectDB();
-    app.listen(PORT, () => {
-      console.log(`🚀 Server is listening on port ${PORT}`);
-    });
-  } catch (error) {
-    console.log("Error starting server", error);
-    process.exit(1);
-    
-  }
-};
-
-startServer();
-
 require("dotenv").config(); // Load .env variables
 const express = require("express");
 const cors = require("cors");
 const nodemailer = require("nodemailer");
 
 const app = express();
-const PORT = 3000;
+const PORT = 3002;
 
 // Middleware
 app.use(cors());
@@ -46,14 +21,13 @@ const transporter = nodemailer.createTransport({
 
 // POST route to receive form data and send email
 app.post("/send-email", (req, res) => {
-  const { name, email, phone, subject, message, ownerEmail} = req.body;
-
+  const { name, email, phone, message, ownerEmail} = req.body;
+  console.log(ownerEmail);
   const mailOptions = {
     from: email,
     to: ownerEmail, //replace this with broker email
-    subject: `Contact Form Message: ${subject}`,
+    subject: `Your Property has been Rented`,
     html: `
-      <h3>New Inquiry from ${name}</h3>
       <p><strong>Email:</strong> ${email}</p>
       <p><strong>Phone:</strong> ${phone}</p>
       <p><strong>Message:</strong></p>
@@ -76,4 +50,3 @@ app.post("/send-email", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
- main
